@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { collection, getDocs } from "firebase/firestore"; 
+import { db } from '../App'
 import { FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { icons, images, COLORS, FONTS, SIZES } from '../constants';
+import { NativeBaseProvider, VStack, Center  } from "native-base";
+
 
 const Home = () => {
 
-    const menuData = [
-        {
+    useEffect(() => {
+        getData();
+    })
 
-        }
-    ]
+    const getData = async () => {
+        const recipesRef = await getDocs(collection(db, "recipes"));
+        recipesRef.forEach((doc) => {
+            console.log(doc.id);
+            console.log(doc.data());
+        });
+    };
+
+
+
+    const menuData = [];
 
     const [menu, setMenu] = React.useState(menuData)
 
@@ -31,21 +45,21 @@ const Home = () => {
     }
 
     function renderMenu() {
-        const renderItem = ({item}) => {
-            <TouchableOpacity>
-
-            </TouchableOpacity>
-        }
         return (
-            <FlatList data={menu} renderItem={renderItem} contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: SIZES.padding * 2 }}/>
+            <VStack space={4} alignItems="center">
+                {}
+                <Center w="64" h="20" bg="indigo.300" rounded="md" shadow={3}></Center>
+            </VStack>
+            
+            //<FlatList data={menu} renderItem={renderItem} contentContainerStyle={{ paddingBottom: 30, paddingHorizontal: SIZES.padding * 2 }}/>
         )
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <NativeBaseProvider style={styles.container}>
             {renderHeader()}
-            {renderMenu}
-        </SafeAreaView>
+            {renderMenu()}
+        </NativeBaseProvider>
     )
 }
 
