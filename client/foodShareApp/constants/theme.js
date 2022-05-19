@@ -2,12 +2,12 @@ import { Dimensions } from "react-native";
 const { width, height } = Dimensions.get("window");
 
 export const COLORS = {
-    darkGreen: "#229879",
-    darkLime: "#1A8871",
-    lightLime: "#BBD6C5",
-    lime: "#2AD699",
-    lightGreen: "#E7F9EF",
-    lightGreen1: "#8EbCA0",
+    darkGreen: "#020036",
+    darkLime: "#020036",
+    lightLime: "#060170",
+    lime: "#020036",
+    lightGreen: "#060170",
+    lightGreen1: "#060170",
 
     white: "#fff",
     white2: '#F9F9F9',
@@ -62,7 +62,7 @@ export const FONTS = {
     body2: { fontFamily: "Roboto-Regular", fontSize: SIZES.body2, lineHeight: 30 },
     body3: { fontFamily: "Roboto-Regular", fontSize: SIZES.body3, lineHeight: 22 },
     body4: { fontFamily: "Roboto-Regular", fontSize: SIZES.body4, lineHeight: 22 },
-    body5: { fontFamily: "Roboto-Regular", fontSize: SIZES.body5, lineHeight: 22 },
+    body5: { fontFamily: "Roboto-Regular", fontSize: SIZES.body5, lineHeight: 20 },
 };
 
 const appTheme = { COLORS, SIZES, FONTS };

@@ -4,7 +4,8 @@ import { getFirestore } from "firebase/firestore";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import Tabs from './navigation/tabs';
-import { Home, Menu, OrderDelivery } from './screens';
+import { NativeBaseProvider } from "native-base";
+import { Menu, OrderDelivery, OrderDetail } from './screens';
 import { useFonts } from 'expo-font';
 
 const Stack = createStackNavigator();
@@ -34,6 +35,8 @@ const App = () => {
           return null;
       }
     return (
+        <NativeBaseProvider>
+
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
@@ -44,8 +47,10 @@ const App = () => {
                 <Stack.Screen name='Home' component={Tabs} />
                 <Stack.Screen name='Menu' component={Menu} />
                 <Stack.Screen name='OrderDelivery' component={OrderDelivery} />
+                <Stack.Screen name="OrderDetail" component={OrderDetail}/>
             </Stack.Navigator>
         </NavigationContainer>
+        </NativeBaseProvider>
     )
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { collection, getDocs } from "firebase/firestore"; 
+import { collection, getDoc, getDocs, query, where, doc } from "firebase/firestore"; 
 import { db } from '../App';
 import {
     View,
@@ -19,26 +19,36 @@ const Home = ( {navigation} ) => {
 
     const [menu, setMenu] = React.useState(menuData);
     const [consumerMode, setConsumerMode] = React.useState(true);
+    const [user, setUser] = React.useState({});
+
+    const menuData = [];
 
     useEffect(() => {
         getData();
-    })
+    }, []); 
 
     const getData = async () => {
-        const recipesRef = await getDocs(collection(db, "recipes"));
-        recipesRef.forEach((doc) => {   
-            
+        const orderQuery = query(collection(db, "orders"), where("status", "==", "active"));
+        const orderRef = await getDocs(orderQuery);
+        const userRef = await getDoc(doc(db, "users", "zOnF8hSRz5YDzfk1vq2y5AeqVIh1"));
+        userRef.exists() ? setUser(userRef.data()) : setUser({});
+        orderRef.forEach((doc) => {   
+            menuData.push({
+                id: doc.id,
+                ...doc.data()
+            })
         });
+        setMenu(menuData);
     };
 
 
 
-    const menuData = [];
+   
 
     
 
     var activeSwitchStyle = {
-        colors: [COLORS.black, COLORS.black],
+        colors: [COLORS.darkGreen, COLORS.darkGreen],
         textColor: COLORS.white
     }
 
@@ -105,7 +115,7 @@ const Home = ( {navigation} ) => {
                             ...FONTS.h2
                         }}
                     >
-                        {"Hallo name"}
+                        Hallo {user.surName}
                     </Text>
                     <Text
                         style={{
@@ -297,8 +307,8 @@ const Home = ( {navigation} ) => {
                 backgroundColor: COLORS.white
             }}
         >
-            <FlatList
-                data={dummyData.categories}
+            {consumerMode ? <FlatList
+                data={menu}
                 keyExtractor={item => `${item.id}`}
                 keyboardDismissMode="on-drag"
                 showsVerticalScrollIndicator={false}
@@ -309,7 +319,7 @@ const Home = ( {navigation} ) => {
                         {/*renderSearchBar()*/}
                         {/*renderSeeRecipeCard()*/}
                         {/*renderTrendingSection()*/}
-                        {renderCategoryHeader()}
+                        { consumerMode ? renderCategoryHeader() : "Render form here"}
                     </View>
                 }
                 renderItem={({ item }) => {
@@ -319,14 +329,14 @@ const Home = ( {navigation} ) => {
                                 marginHorizontal: SIZES.padding
                             }}
                             categoryItem={item}
-                            onPress={() => navigation.navigate("Recipe", { recipe: item })}
+                            onPress={() => navigation.navigate("OrderDetail", { order: item })}
                         />
                     )
                 }}
                 ListFooterComponent={
                     <View style={{ marginBottom: 100 }}></View>
                 }
-            />
+            /> : <Text></Text>}
         </SafeAreaView>
     )
 }
