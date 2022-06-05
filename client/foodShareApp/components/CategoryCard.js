@@ -46,7 +46,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
                         flex: 1,
                         justifyContent: 'flex-start',
                         alignSelf: 'flex-end',
-                        color: COLORS.darkLime,
+                        color: COLORS.black,
                         ...FONTS.body5,
                     }}
                 >

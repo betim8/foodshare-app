@@ -1,9 +1,9 @@
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Home } from "../screens"
-import { TabIcon } from "../components"
-import { COLORS, icons } from "../constants"
+import { Home, Search } from "../screens";
+import { COLORS } from "../constants";
+import { AntDesign } from '@expo/vector-icons';
 
 
 const Tab = createBottomTabNavigator()
@@ -30,28 +30,29 @@ const Tabs = () => {
                 name="Home"
                 component={Home}
                 options={{
-                    tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon={icons.home} />
+                    tabBarIcon: ({ focused }) =>  <AntDesign name="home" size={30} color={focused ? COLORS.darkGreen : COLORS.black} />,
+
                 }}
             />
             <Tab.Screen
                 name="Search"
-                component={Home}
+                component={Search}
                 options={{
-                    tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon={icons.search} />
+                    tabBarIcon: ({ focused }) => <AntDesign name="search1" size={30} color={focused ? COLORS.darkGreen : COLORS.black} />
                 }}
             />
             <Tab.Screen
                 name="Bookmark"
                 component={Home}
                 options={{
-                    tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon={icons.bookmark} />
+                    tabBarIcon: ({ focused }) => <AntDesign name="bars" size={30} color={focused ? COLORS.darkGreen : COLORS.black} />
                 }}
             />
             <Tab.Screen
                 name="Settings"
                 component={Home}
                 options={{
-                    tabBarIcon: ({ focused }) => <TabIcon focused={focused} icon={icons.settings} />
+                    tabBarIcon: ({ focused }) =>  <AntDesign name="user" size={30} color={focused ? COLORS.darkGreen : COLORS.black} />
                 }}
             />
         </Tab.Navigator>

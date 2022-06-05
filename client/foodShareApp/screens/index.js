@@ -1,7 +1,7 @@
 import Home from './Home'
-import Menu from './Menu'
+import Search from './Search'
 import OrderDelivery from './OrderDelivery'
 import OrderDetail from "./OrderDetail"
 
 
-export { Home, Menu, OrderDelivery, OrderDetail }
+export { Home, Search, OrderDelivery, OrderDetail }
