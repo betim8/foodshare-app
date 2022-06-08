@@ -1,54 +1,68 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { InstantSearch, SearchBox, Hits } from 'react-instantsearch-dom';
-import { searchClient } from '../App';
-import { FONTS, COLORS, icons, images, SIZES, dummyData } from "../constants";
+import React from "react";
+import { Text, View, TouchableOpacity, Image, ScrollView } from "react-native";
+import { InstantSearch, Hits, SearchBox, Configure } from "react-instantsearch-dom";
+import { searchClient } from "../App";
+import { FONTS, COLORS, SIZES } from "../constants";
+import "./Search.css";
 
-const Search = () => {
-    return (
-        <View>
-             <InstantSearch searchClient={searchClient} indexName="recipes">
-            <SearchBox />
-            <Hits hitComponent={SearchResult}/>
-            </InstantSearch>
-        </View>
-    )
-}
+const Search = ({ navigation }) => {
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <InstantSearch searchClient={searchClient} indexName="recipes">
+        <SearchBox
+          translations={{
+            placeholder: "Suche nach Gerichten....",
+          }}
+        />
+        <Configure hitsPerPage={6} />
+        <Hits hitComponent={SearchResult} />
+      </InstantSearch>
+    </ScrollView>
+  );
 
-function SearchResult({hit}) {
-    console.log(hit);
-    return (
-        <View>
-        <TouchableOpacity
+
+function SearchResult({ hit }) {
+  console.log(hit);
+  return (
+    <View>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          padding: 10,
+          marginTop: 10,
+          borderRadius: SIZES.radius,
+          backgroundColor: COLORS.gray2,
+          marginHorizontal: SIZES.padding,
+        }}
+        onPress={() => navigation.navigate("RecipeDetail", { recipe: hit })}
+      >
+        <View style={{ width: "70%", paddingLeft: 20 }}>
+          <Text style={{ flex: 1, ...FONTS.h3 }}>{hit.name}</Text>
+          <Text
             style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: 10,
-                marginTop: 10,
-                borderRadius: SIZES.radius,
-                backgroundColor: COLORS.gray2,
-                marginHorizontal: SIZES.padding
+              color: COLORS.lightGray2,
+              ...FONTS.body6,
             }}
-            onPress={() => console.log("sda")}
-        >
-            <View
-                style={{
-                    width: '70%',
-                    paddingLeft: 20
-                }}
-            >
-                <Text
-                    style={{
-                        flex: 1,
-                        ...FONTS.h2,
-                    }}
-                >
-                    {hit.name}
-                </Text>
-            </View>
-        </TouchableOpacity>
+          >
+            {hit?.ingredients.slice(0, 5).map((ing) => {
+              return ing.name + ", ";
+            })}
+            ...
+          </Text>
         </View>
-    )
+        <View>
+          <Text>test</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 }
-
+};
 export default Search;

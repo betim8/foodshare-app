@@ -109,7 +109,7 @@ const RecipeCreatorCardInfo = ({ selectedOrder }) => {
 const OrderDetail = ({ navigation, route }) => {
 
     const [selectedOrder, setSelectedOrder] = React.useState(null);
-    const [recipeDetail, setRecipeDetail] = React.useState(null);
+    const [recipeDetail, setRecipeDetail] = React.useState(null);                                                 
     const [isLoading, setIsLoading] = React.useState(true);
 
     const scrollY = useRef(new Animated.Value(0)).current;
