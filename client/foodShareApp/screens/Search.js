@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, ScrollView } from "react-native";
 import { InstantSearch, Hits, SearchBox, Configure } from "react-instantsearch-dom";
 import { searchClient } from "../App";
 import { FONTS, COLORS, SIZES } from "../constants";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import "./Search.css";
 
 const Search = ({ navigation }) => {
@@ -23,6 +24,12 @@ const Search = ({ navigation }) => {
         <Configure hitsPerPage={6} />
         <Hits hitComponent={SearchResult} />
       </InstantSearch>
+      <View style={{flexDirection: 'row', justifyContent: 'center', marginBottom: SIZES.margin, width: '100%'}}>
+        <TouchableOpacity style={{backgroundColor: COLORS.darkLime, borderRadius: '30px', flexDirection: 'row', paddingHorizontal: SIZES.padding, paddingVertical: '10px'}} onPress={() => navigation.navigate("AddRecipe")}>
+          <Ionicons name="add-circle" size={24} style={{color: COLORS.white, marginRight: SIZES.margin}} />
+          <Text style={{color: COLORS.white, ...FONTS.body4}}>Gericht hinzufügen</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 
