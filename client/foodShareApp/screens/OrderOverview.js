@@ -4,65 +4,85 @@ import { onAuthStateChanged } from "firebase/auth";
 
 import { db, auth } from "../App";
 import { View, Text, SafeAreaView, FlatList, ActivityIndicator } from "react-native";
-import { CategoryCard } from "../components";
+import { OrderCard } from "../components";
 import { FONTS, COLORS, SIZES } from "../constants";
 import { CustomButton } from "../components";
 import { Fab } from "native-base";
 import { Ionicons } from '@expo/vector-icons';
 
-const Home = ({ navigation }) => {
-  const [orders, setOrders] = React.useState(orderData);
+const OrderOverview = ({ navigation }) => {
+  const [orders, setOrders] = React.useState([]);
   const [consumerMode, setConsumerMode] = React.useState(true);
   const [user, setUser] = React.useState(null);
+  const [requests, setRequests] = React.useState([]);
 
-  const orderData = [];
+
 
 
   useEffect(() => {
-    console.log("auth effect");
+    console.log("useffect userdata")
     onAuthStateChanged(auth, (user) => {
-      console.log("letso");
-      console.log(user);
       if (user) {
         getUserData(user.uid);
       } 
   });
+
   }, []);
 
   useEffect(() => {
-    console.log("data effect");
+    console.log("useffect order data")
+
       if (consumerMode) {
         getOrderData(user?.id);
       } else {
-        getHistOrders(user?.id);
+        getRequests(user?.id);
       }
-  }, [consumerMode]);
+  }, [user, consumerMode]);
 
 
 
   async function getUserData(userUid) {
+    console.log("useradata")
     const userRef = await getDoc(doc(db, "users", userUid));
     setUser({
       id: userRef.id,
       ...userRef.data()
     });
+    // if (userUid !== user?.id) {
+    //   let user = {id: userRef.id, ...userRef.data()}
+    //   setReqUsers([...reqUsers, user]);
+    // } 
   }
 
   async function getOrderData(userUid) {
-    console.log("order data")
-    const orderQuery = query(collection(db, "orders"), where("status", "==", "active"));
+    let orderData = [];
+    if (userUid) {
+      const orderQuery = query(collection(db, "orders"), where("toUserUid", "==", userUid));
+      const orderHistQuery = query(collection(db, "orders_hist"), where("toUserUid", "==", userUid));
     const orderRef = await getDocs(orderQuery);
+    const orderHistRef = await getDocs(orderHistQuery);
     orderRef.forEach((doc) => {
       orderData.push({
         id: doc.id,
         ...doc.data(),
       });
     });
+    orderHistRef.forEach((doc) => {
+      orderData.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
     setOrders(orderData);
+    }
+    
   }
 
-  async function getHistOrders(userUid) {
-    const orderQuery = query(collection(db, "orders_hist"), where("fromUserUid", "==", userUid));
+  async function getRequests(userUid) {
+    let orderData = [];
+
+    let requests = [];
+    const orderQuery = query(collection(db, "orders"), where("fromUserUid", "==", userUid));
     const orderRef = await getDocs(orderQuery);
     orderRef.forEach((doc) => {
       orderData.push({
@@ -70,7 +90,20 @@ const Home = ({ navigation }) => {
         ...doc.data(),
       });
     });
-    setOrders(orderData);
+    for (let o of orderData) {
+      let order = {};
+      order.recipeName = o.recipeName;
+      let users = [];
+      for (let userId of o.requestingUserIds) {
+        console.log(userId);
+        const userRef = await getDoc(doc(db, "users", userId));
+        users.push({id: userRef.id, ...userRef.data()});
+      }
+      order.users = users;
+      requests.push(order);
+    }
+    console.log(requests);
+    setRequests(requests);
   }
 
   var activeSwitchStyle = {
@@ -99,11 +132,11 @@ const Home = ({ navigation }) => {
         }}
       >
         <CustomButton
-          buttonText="Abholen"
+          buttonText="Bestellungen"
           buttonContainerStyle={{
             paddingVertical: 2.5,
             borderRadius: 20,
-            width: 80,
+            width: 100,
           }}
           colors={consumerMode ? activeSwitchStyle.colors : inactiveSwitchStyle.colors}
           onPress={toggleSwitch}
@@ -111,11 +144,11 @@ const Home = ({ navigation }) => {
           fontStyle={FONTS.body3}
         />
         <CustomButton
-          buttonText="Anbieten"
+          buttonText="Anfragen"
           buttonContainerStyle={{
             paddingVertical: 2.5,
             borderRadius: 20,
-            width: 80,
+            width: 100,
           }}
           colors={!consumerMode ? activeSwitchStyle.colors : inactiveSwitchStyle.colors}
           onPress={toggleSwitch}
@@ -143,16 +176,7 @@ const Home = ({ navigation }) => {
               ...FONTS.h2,
             }}
           >
-            Hallo {user.surName}
-          </Text>
-          <Text
-            style={{
-              marginTop: 3,
-              color: COLORS.gray,
-              ...FONTS.body3,
-            }}
-          >
-            Schau dir Menüs in deiner Nähe an
+            Bestellungen
           </Text>
         </View>
       </View>
@@ -176,7 +200,7 @@ const Home = ({ navigation }) => {
               ...FONTS.h2,
             }}
           >
-            Hallo {user.surName}
+            Anfragen
           </Text>
           <Text
             style={{
@@ -185,7 +209,7 @@ const Home = ({ navigation }) => {
               ...FONTS.body3,
             }}
           >
-            Was möchtest du heute anbieten?
+            Leute haben dein Gericht angefragt
           </Text>
         </View>
       </View>
@@ -202,7 +226,7 @@ const Home = ({ navigation }) => {
           marginHorizontal: SIZES.padding,
         }}
       >
-        <Text style={{ flex: 1, ...FONTS.h2 }}>Menüs in deiner Nähe</Text>
+        <Text style={{ flex: 1, ...FONTS.h3 }}>Bestellungen</Text>
       </View>
     );
   }
@@ -217,7 +241,7 @@ const Home = ({ navigation }) => {
           marginHorizontal: SIZES.padding,
         }}
       >
-        <Text style={{ flex: 1, ...FONTS.h2 }}>Kürzlich gekochte Menüs</Text>
+        <Text style={{ flex: 1, ...FONTS.h2 }}>Aktive Anfragen</Text>
       </View>
     );
   }
@@ -242,12 +266,13 @@ const Home = ({ navigation }) => {
           <View>
             {renderSwitch()}
             {consumerMode ? renderMainHeaderConsumer() : renderMainHeaderCook()}
-            {consumerMode ? renderSubHeaderConsumer() : renderSubHeaderCook()}
+            {/* {consumerMode ? renderSubHeaderConsumer() : renderSubHeaderCook()} */}
           </View>
         }
         renderItem={({ item }) => {
           return (
-            <CategoryCard
+            
+            <OrderCard
               containerStyle={{
                 marginHorizontal: SIZES.padding,
               }}
@@ -257,17 +282,10 @@ const Home = ({ navigation }) => {
             />
           );
         }}
-        ListFooterComponent={consumerMode ? 
-        <View style={{ marginBottom: 100 }}></View> 
-        :
-        <View>
-            <View style={{ marginBottom: 100 }}></View> 
-            <Fab onPress={() => navigation.navigate("Search")} backgroundColor={COLORS.transparentBlack9} renderInPortal={false} shadow={2} right={90} size="sm" icon={<Ionicons name="fast-food" size={24} color="white" />} label={<Text style={{ color: COLORS.white, ...FONTS.body4 }} fontSize="sm">Andere Gerichte freigeben</Text>} />
-        </View>
-        
-        }
+        ListFooterComponent={
+        <View style={{ marginBottom: 100 }}></View> }
       />
     </SafeAreaView>
   );
 };
-export default Home;
+export default OrderOverview;

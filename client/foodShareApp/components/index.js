@@ -2,6 +2,7 @@ import TabIcon from "./TabIcon"
 import CustomButton from "./CustomButton"
 import TrendingCard from "./TrendingCard"
 import CategoryCard from "./CategoryCard"
+import OrderCard from "./OrderCard"
 import Viewers from "./Viewers"
 
 export {
@@ -9,5 +10,6 @@ export {
     CustomButton,
     TrendingCard,
     CategoryCard,
-    Viewers
+    Viewers,
+    OrderCard
 }

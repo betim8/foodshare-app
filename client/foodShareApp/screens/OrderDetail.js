@@ -117,20 +117,19 @@ const OrderDetail = ({ navigation, route }) => {
 
     React.useEffect(() => {
         console.log(route.params);
-        let { order } = route.params;
-        const date = new Date(order.pickUpTime.seconds * 1000);
-        order['pickupInH'] = Moment(date).format('HH:mm');
-        getData(order);
-        setSelectedOrder(order);
+        let { recipe } = route.params;
+        const date = new Date(recipe.pickUpTime.seconds * 1000);
+        recipe['pickupInH'] = Moment(date).format('HH:mm');
+        getData(recipe);
+        setSelectedOrder(recipe);
     }, [])
 
-    async function getData(order) {
-        const recipeDetail = await getDoc(doc(db, "recipes", order.recipeId));
+    async function getData(recipe) {
+        const recipeDetail = await getDoc(doc(db, "recipes", recipe.recipeId));
         recipeDetail.data().ingredients.sort((a, b) =>  a.amount - b.amount);
         var sorted = recipeDetail.data();
         sorted.ingredients.sort((a, b) =>  b.amount - a.amount);
         setRecipeDetail(sorted);
-        console.log(recipeDetail.data());
         setIsLoading(false);
     }
 
@@ -408,7 +407,7 @@ const OrderDetail = ({ navigation, route }) => {
 
         var updatedOrder = {
             ...selectedOrder,
-             //TODO Replace with Auth getUser
+            test: "" //TODO Replace with Auth getUser
         }
         console.log(updatedOrder);
         //await setDoc(doc(db, 'orders', updatedOrder.id), { status: updatedOrder.status, toUserUid: updatedOrder.toUserUid }, { merge: true });

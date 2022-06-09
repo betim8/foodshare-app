@@ -57,9 +57,9 @@ function SearchResult({ hit }) {
             ...
           </Text>
         </View>
-        <View>
+        {/* <View>
           <Text>test</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
     </View>
   );

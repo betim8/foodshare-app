@@ -5,12 +5,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import Tabs from './navigation/tabs';
 import { Hidden, NativeBaseProvider, View } from "native-base";
-import { Search, OrderDelivery, OrderDetail, RecipeDetail } from './screens';
+import { Search, OrderDetail, RecipeDetail, OrderOverview } from './screens';
 import { useFonts } from 'expo-font';
 import algoliasearch from 'algoliasearch/lite';
 import * as firebaseui from 'firebaseui';
 import firebase from 'firebase/compat/app';
-import 'firebaseui/dist/firebaseui.css';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const searchClient = algoliasearch('V8UDZM4P2J', '4258a99e2a70d8e9f2decb396d73c58d');
@@ -74,6 +73,7 @@ const App = () => {
     onAuthStateChanged(auth, (user) => {
         console.log(user);
         if (user) {
+            
             setLoggedIn(true);
         } else {
             setLoggedIn(false);
@@ -93,9 +93,9 @@ const App = () => {
                     >
                         <Stack.Screen name='Home' component={Tabs} />
                         <Stack.Screen name='Search' component={Search} />
-                        <Stack.Screen name='OrderDelivery' component={OrderDelivery} />
                         <Stack.Screen name="OrderDetail" component={OrderDetail} />
                         <Stack.Screen name="RecipeDetail" component={RecipeDetail} />
+                        <Stack.Screen name="OrderOverview" component={OrderOverview} />
                     </Stack.Navigator>
                 </NavigationContainer>) : <View></View>
             }

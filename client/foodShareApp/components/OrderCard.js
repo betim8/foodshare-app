@@ -10,7 +10,7 @@ import { COLORS, FONTS, SIZES, } from "../constants";
 import { Avatar } from "native-base";
 import Moment from 'moment';
 
-const CategoryCard = ({ containerStyle, categoryItem, onPress, isConsumerMode }) => {
+const OrderCard = ({ containerStyle, categoryItem, onPress, isConsumerMode }) => {
     const date = new Date(categoryItem.pickUpTime.seconds*1000);
     const pickupTime = Moment(date).format('HH:mm')
     return (
@@ -41,17 +41,17 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress, isConsumerMode })
                     paddingLeft: 20
                 }}
             >
-                 { isConsumerMode ? <Text
+                <Text
                     style={{
                         flex: 1,
                         justifyContent: 'flex-start',
                         alignSelf: 'flex-end',
-                        color: COLORS.black,
+                        color: categoryItem.status === "active" ? COLORS.darkLime : COLORS.black,
                         ...FONTS.body5,
                     }}
                 >
-                    <Entypo name="location-pin" size={20} color={COLORS.darkLime} /> 0.2km  |  <Entypo name="clock" size={18} color={COLORS.darkLime}  />  {pickupTime}
-                </Text> : <View></View>}
+                    {categoryItem.status === "active" ? <>Aktiv | <Entypo name="clock" size={18} color={COLORS.darkLime}  /> {pickupTime} </> : "Abgeschlossen"}  
+                </Text> 
 
                 <Text
                     style={{
@@ -80,4 +80,4 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress, isConsumerMode })
     )
 }
 
-export default CategoryCard
+export default OrderCard

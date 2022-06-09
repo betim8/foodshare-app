@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Home, Search } from "../screens";
+import { Home, Search, OrderOverview } from "../screens";
 import { COLORS } from "../constants";
 import { AntDesign } from '@expo/vector-icons';
 
@@ -43,7 +43,7 @@ const Tabs = () => {
             />
             <Tab.Screen
                 name="Bookmark"
-                component={Home}
+                component={OrderOverview}
                 options={{
                     tabBarIcon: ({ focused }) => <AntDesign name="bars" size={30} color={focused ? COLORS.darkGreen : COLORS.black} />
                 }}
