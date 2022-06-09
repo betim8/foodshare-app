@@ -9,6 +9,7 @@ import { FONTS, COLORS, SIZES } from "../constants";
 import { CustomButton } from "../components";
 import { Fab } from "native-base";
 import { Ionicons } from '@expo/vector-icons';
+import RequestCard from "../components/RequestCard";
 
 const OrderOverview = ({ navigation }) => {
   const [orders, setOrders] = React.useState([]);
@@ -258,7 +259,7 @@ const OrderOverview = ({ navigation }) => {
       }}
     >
       <FlatList
-        data={consumerMode ? orders : orders}
+        data={consumerMode ? orders : requests}
         keyExtractor={(item) => `${item.id}`}
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
@@ -271,7 +272,7 @@ const OrderOverview = ({ navigation }) => {
         }
         renderItem={({ item }) => {
           return (
-            
+            consumerMode ? (
             <OrderCard
               containerStyle={{
                 marginHorizontal: SIZES.padding,
@@ -279,7 +280,16 @@ const OrderOverview = ({ navigation }) => {
               categoryItem={item}
               onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true })}
               isConsumerMode={consumerMode}
+            />) : (
+              <RequestCard
+              containerStyle={{
+                marginHorizontal: SIZES.padding,
+              }}
+              request={item}
+              onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true })}
+              isConsumerMode={consumerMode}
             />
+            )
           );
         }}
         ListFooterComponent={

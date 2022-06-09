@@ -4,27 +4,26 @@ import { Entypo } from "@expo/vector-icons";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Avatar } from "native-base";
 import Moment from "moment";
+import { AntDesign } from "@expo/vector-icons";
 
-const RequestCard = ({ containerStyle, requests, onPress, isConsumerMode }) => {
-  const date = new Date(categoryItem.pickUpTime.seconds * 1000);
-  const pickupTime = Moment(date).format("HH:mm");
+
+const RequestCard = ({ containerStyle, request, onPress, isConsumerMode }) => {
+
   return (
     <View>
-      {requests.map((req, index) => (
-           <View>
            <Text 
-        key={index}
           style={{
             flex: 1,
             ...FONTS.h2,
+            marginHorizontal: SIZES.padding
           }}
         >
-          {req.recipeName}
+          {request.recipeName}
         </Text>
 
            { 
-               req.users.map((u, iindex) =>
-               <TouchableOpacity
+               request.users.map((u, iindex) =>
+               <TouchableOpacity key={iindex}
                style={{
                  flexDirection: "row",
                  alignItems: "center",
@@ -36,10 +35,11 @@ const RequestCard = ({ containerStyle, requests, onPress, isConsumerMode }) => {
                }}
                onPress={() => onPress}
              >
-               <View style={{ width: "70%", paddingLeft: 20 }}>
+               <View style={{ width: "100%"}}>
                  <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "stretch" }}>
-                   <Avatar bg={COLORS.black} size="sm" source={{ uri: req.avatar }}></Avatar>
-                   <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>Anfrage von {req.surName}</Text>
+                   <Avatar bg={COLORS.black} size="sm" source={{ uri: u.avatar }}></Avatar>
+                   <Text style={{ color: COLORS.gray, ...FONTS.body3 }}>{u.surName}</Text>
+                   <Text style={{color: COLORS.darkGreen,...FONTS.body3}}>Annehmen <AntDesign name="right" size={18} color={COLORS.darkGreen}/></Text>
                  </View>
                </View>
                {/* <View>
@@ -47,13 +47,6 @@ const RequestCard = ({ containerStyle, requests, onPress, isConsumerMode }) => {
                </View> */}
              </TouchableOpacity>)
            }
-
-       </View>)
-
-
-        )}
-
-      
     </View>
   );
 };

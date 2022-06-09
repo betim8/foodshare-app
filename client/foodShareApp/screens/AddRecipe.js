@@ -13,7 +13,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AntDesign } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FONTS, COLORS, icons, images, SIZES, dummyData } from "../constants";
-import { AddRecipe } from '.';
 
 const dataZutat = [
     { labelZutat: 'Tomate', valueZutat: '1' },
