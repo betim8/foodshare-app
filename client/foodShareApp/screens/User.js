@@ -10,6 +10,7 @@ import {
     ScrollView,
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Rating } from 'react-native-ratings';
 import { FONTS, COLORS, icons, images, SIZES, dummyData } from "../constants";
 
 const User = () => {
@@ -35,6 +36,13 @@ const User = () => {
                     <Ionicons name="location" size={24} style={{color: COLORS.darkLime, marginRight: SIZES.marginRight}} />
                     <Text style={{color: COLORS.gray, ...FONTS.body3}}>Thalwil</Text>
                 </View>
+                <Text style={{color: COLORS.black, ...FONTS.body3, marginBottom: SIZES.margin, marginTop: SIZES.margin}}>Aktuelle Bewertung:</Text>
+                <Rating
+                    ratingColor='#3498db'
+                    imageSize={25}
+                    readonly={true}
+                    startingValue={4}
+                />
             </ScrollView>
         </SafeAreaView>
     )
