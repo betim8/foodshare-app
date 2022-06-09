@@ -36,7 +36,7 @@ const dataEinheit = [
     { labelEinheit: 'ml', valueEinheit: '18' },
 ];
 
-const AddRecipe = () => {
+const AddRecipe = ({ navigation }) => {
     const [value, setValue] = useState(null);
     const [isFocusZutat, setIsFocusZutat] = useState(false);
     const [isFocusEinheit, setIsFocusEinheit] = useState(false);
@@ -77,7 +77,6 @@ const AddRecipe = () => {
     return (
         <SafeAreaView style={{backgroundColor: '#FFF', flex: 1}}>
             <View>
-                {renderNavigationHeader()}
                 <ScrollView style={{padding: SIZES.padding}} contentContainerStyle={{justifyContent: 'center'}} showsVerticalScrollIndicator={false}>
                     <View style={{alignItems: 'center', justifyContent: 'center', marginBottom: SIZES.padding}}>
                         <Text style={{color: COLORS.black, ...FONTS.h2}}>Gericht hinzufügen</Text>
@@ -113,6 +112,7 @@ const AddRecipe = () => {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
+                {renderNavigationHeader()}
             </View>
         </SafeAreaView>
     )
