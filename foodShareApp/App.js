@@ -11,19 +11,11 @@ import algoliasearch from 'algoliasearch/lite';
 import * as firebaseui from 'firebaseui';
 import firebase from 'firebase/compat/app';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { firebaseConfig, appId, apiKey } from "./localSecrets";
 
-const searchClient = algoliasearch('V8UDZM4P2J', '4258a99e2a70d8e9f2decb396d73c58d');
+const searchClient = algoliasearch(appId, apiKey);
 export { searchClient };
 
-const firebaseConfig = {
-    apiKey: "AIzaSyCtF3dLMjn3wFZihvrMdXHz9DXPOQ3HVnI",
-    authDomain: "foodshare-ee888.firebaseapp.com",
-    projectId: "foodshare-ee888",
-    storageBucket: "foodshare-ee888.appspot.com",
-    messagingSenderId: "605709039803",
-    appId: "1:605709039803:web:8d45712c734f08898c119e",
-    measurementId: "G-3T46W0XP68"
-};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
