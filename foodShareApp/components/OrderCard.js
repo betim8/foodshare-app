@@ -50,7 +50,7 @@ const OrderCard = ({ containerStyle, categoryItem, onPress, isConsumerMode }) =>
                         ...FONTS.body5,
                     }}
                 >
-                    {categoryItem.status === "active" ? <>Aktiv | <Entypo name="clock" size={18} color={COLORS.darkLime}  /> {pickupTime} </> : "Abgeschlossen"}  
+                    {(categoryItem.status === "active" || categoryItem.status === "progress") ? <>Aktiv | <Entypo name="clock" size={18} color={COLORS.darkLime}  /> {pickupTime} </> : "Abgeschlossen"}  
                 </Text> 
 
                 <Text

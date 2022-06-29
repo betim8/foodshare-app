@@ -5,7 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native';
 import Tabs from './navigation/tabs';
 import { Hidden, NativeBaseProvider, View } from "native-base";
-import { Search, AddRecipe, OrderDetail, RecipeDetail, User, OrderOverview} from './screens';
+import { Search, AddRecipe, OrderDetail, RecipeDetail, User, OrderOverview, ConfirmedOrder} from './screens';
 import { useFonts } from 'expo-font';
 import algoliasearch from 'algoliasearch/lite';
 import * as firebaseui from 'firebaseui';
@@ -90,6 +90,7 @@ const App = () => {
                         <Stack.Screen name="OrderOverview" component={OrderOverview} />
                         <Stack.Screen name='AddRecipe' component={AddRecipe} />
                         <Stack.Screen name="User" component={User}/>
+                        <Stack.Screen name="ConfirmedOrder" component={ConfirmedOrder}/>
                     </Stack.Navigator>
                 </NavigationContainer>) : <View></View>
             }

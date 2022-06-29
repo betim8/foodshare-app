@@ -4,6 +4,8 @@ import TrendingCard from "./TrendingCard"
 import CategoryCard from "./CategoryCard"
 import OrderCard from "./OrderCard"
 import Viewers from "./Viewers"
+import DoubleDropdown from "./DoubleDropdown"
+
 
 export {
     TabIcon,
@@ -11,5 +13,6 @@ export {
     TrendingCard,
     CategoryCard,
     Viewers,
-    OrderCard
+    OrderCard,
+    DoubleDropdown
 }

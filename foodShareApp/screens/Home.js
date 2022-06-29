@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
       } else {
         getHistOrders(user?.id);
       }
-  }, [consumerMode]);
+  }, [consumerMode, user]);
 
 
 
@@ -50,7 +50,7 @@ const Home = ({ navigation }) => {
 
   async function getOrderData(userUid) {
     console.log("order data")
-    const orderQuery = query(collection(db, "orders"), where("status", "==", "active"));
+    const orderQuery = query(collection(db, "orders"), where("status", "==", "active"), where("fromUserUid", "!=", userUid));
     const orderRef = await getDocs(orderQuery);
     orderRef.forEach((doc) => {
       orderData.push({
@@ -252,7 +252,7 @@ const Home = ({ navigation }) => {
                 marginHorizontal: SIZES.padding,
               }}
               categoryItem={item}
-              onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true })}
+              onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true, user: user })}
               isConsumerMode={consumerMode}
             />
           );

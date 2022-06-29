@@ -6,13 +6,14 @@ import { Fab, Divider, Button } from "native-base";
 import { Checkbox, Select } from "native-base";
 import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, addDoc, collection } from "firebase/firestore";
 import { SIZES, FONTS, COLORS } from "../constants";
 
 const HEADER_HEIGHT = 350;
 
 const RecipeDetail = ({ navigation, route }) => {
   const [recipeDetail, setRecipeDetail] = React.useState(null);
+  const [user, setUser] = React.useState(null);
   const scrollY = useRef(new Animated.Value(0)).current;
   const [ingredientsBoxes, setIngredientsBoxes] = React.useState([]);
   const [selectedTime, setSelectedTime] = React.useState("15:00");
@@ -23,7 +24,8 @@ const RecipeDetail = ({ navigation, route }) => {
 
 
   React.useEffect(() => {
-    let { recipe, isFromHome } = route.params;
+    let { recipe, isFromHome, user } = route.params;
+    setUser(user);
     if (isFromHome) {
       getData(recipe);
     } else {
@@ -278,7 +280,7 @@ const RecipeDetail = ({ navigation, route }) => {
   }
 
   function setTransformTime(itemValue) {
-    console.log(itemValue);
+    setSelectedTime(itemValue);
   }
 
   function renderTimeSelection() {
@@ -287,7 +289,6 @@ const RecipeDetail = ({ navigation, route }) => {
       items.push(Moment( {hour: index} ).format('HH:mm'));
       items.push(Moment({ hour: index, minute: 30 }).format('HH:mm'));
     });
-    console.log(items);
     return (
       <View
         style={{
@@ -307,7 +308,7 @@ const RecipeDetail = ({ navigation, route }) => {
           >
             Abholbereit um:
           </Text>
-          <Select selectedValue={selectedTime} width="115" bottom={2}  placeholder="Währe Uhrzeit aus" mt={1} _selectedItem={{bg: "purple.300"}} onValueChange={itemValue => setTransformTime(itemValue)}>
+          <Select selectedValue={selectedTime} width="115" bottom={2}  placeholder="Wähle Uhrzeit aus" mt={1} _selectedItem={{bg: "purple.300"}} onValueChange={itemValue => setTransformTime(itemValue)}>
           {items.map((time, index) => (
               <Select.Item key={index} label={time} value={time} />
               ))}
@@ -317,13 +318,16 @@ const RecipeDetail = ({ navigation, route }) => {
     );
   }
 
+  function setPrice(itemValue) {
+    setSelectedPrice(Number(itemValue)|| 0);
+  }
+
   function renderPriceSelection() {
     var items = [];
     new Array(6).fill().forEach((acc, index) => {
       items.push(index);
       items.push(index + 0.5);
     });
-    console.log(items);
     return (
       <View
         style={{
@@ -343,7 +347,7 @@ const RecipeDetail = ({ navigation, route }) => {
           >
             Anbieten für:
           </Text>
-          <Select selectedValue={selectedPrice} width="115" bottom={2} placeholder="Währe den Preis" mt={1} _selectedItem={{bg: "purple.300"}} onValueChange={itemValue => setSelectedPrice(itemValue)}>
+          <Select selectedValue={selectedPrice} width="115" bottom={2} placeholder="Wähle den Preis" mt={1} _selectedItem={{bg: "purple.300"}} onValueChange={itemValue => setPrice(itemValue)}>
           {items.map((price, index) => (
               <Select.Item key={index} label={new Intl.NumberFormat('de-CH', { style: 'currency', currency: 'CHF' }).format(price)} value={price} />
               ))}
@@ -385,17 +389,28 @@ const RecipeDetail = ({ navigation, route }) => {
     );
   }
 
-  async function offerRecipe() {
-    console.log("letsgo");
-
+  async function offerRecipe() {    
+    var pickTime = selectedTime.split(":");
+    var pickUpH = Number(pickTime[0]);
+    var pickUpMin = Number(pickTime[1]);
+    var pickUpDate = Moment().hours(pickUpH).minutes(pickUpMin);
     var updatedOrder = {
-      ...selectedOrder,
-      //TODO Replace with Auth getUser
+      fromUserAvatar: user.avatar,
+      fromUserName: user.surName,
+      fromUserUid: user.id,
+      pickUpAddress: user.address,
+      cost: selectedPrice,
+      pickUpTime: pickUpDate,
+      recipeId: recipeDetail.recipeId,
+      recipeImgSrc: recipeDetail.recipeImgSrc ? recipeDetail.recipeImgSrc : 'https://firebasestorage.googleapis.com/v0/b/foodshare-ee888.appspot.com/o/app%2Fdefault_meal_img.png?alt=media&token=24c93c32-6c0e-4792-aefd-6ade47363d73',
+      recipeName: recipeDetail.name,
+      selectedIng: recipeDetail.ingredients.filter(ing => ing.isOptional === false),
+      requestingUserIds: [],
+      status: 'active',
+      toUserUid: null
     };
-    console.log(updatedOrder);
-    //await setDoc(doc(db, 'orders', updatedOrder.id), { status: updatedOrder.status, toUserUid: updatedOrder.toUserUid }, { merge: true });
-    setSelectedOrder(updatedOrder);
-    console.log(selectedOrder);
+    const docRef = await addDoc(collection(db, "orders"), updatedOrder);
+    navigation.navigate("Home");
   }
 
   return (

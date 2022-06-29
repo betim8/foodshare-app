@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { collection, getDoc, getDocs, query, where, doc } from "firebase/firestore";
+import { collection, getDoc, getDocs, query, where, doc, orderBy } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { db, auth } from "../App";
@@ -49,10 +49,6 @@ const OrderOverview = ({ navigation }) => {
       id: userRef.id,
       ...userRef.data()
     });
-    // if (userUid !== user?.id) {
-    //   let user = {id: userRef.id, ...userRef.data()}
-    //   setReqUsers([...reqUsers, user]);
-    // } 
   }
 
   async function getOrderData(userUid) {
@@ -83,7 +79,7 @@ const OrderOverview = ({ navigation }) => {
     let orderData = [];
 
     let requests = [];
-    const orderQuery = query(collection(db, "orders"), where("fromUserUid", "==", userUid));
+    const orderQuery = query(collection(db, "orders"), where("fromUserUid", "==", userUid), where("status", "in", ["active", "progress"]), orderBy("pickUpTime"));
     const orderRef = await getDocs(orderQuery);
     orderRef.forEach((doc) => {
       orderData.push({
@@ -101,6 +97,9 @@ const OrderOverview = ({ navigation }) => {
         users.push({id: userRef.id, ...userRef.data()});
       }
       order.users = users;
+      order.id = o.id;
+      order.status = o.status;
+      order.toUserUid = o.toUserUid;
       requests.push(order);
     }
     console.log(requests);
@@ -217,36 +216,6 @@ const OrderOverview = ({ navigation }) => {
     );
   }
 
-  function renderSubHeaderConsumer() {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 20,
-          marginHorizontal: SIZES.padding,
-        }}
-      >
-        <Text style={{ flex: 1, ...FONTS.h3 }}>Bestellungen</Text>
-      </View>
-    );
-  }
-
-  function renderSubHeaderCook() {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 20,
-          marginHorizontal: SIZES.padding,
-        }}
-      >
-        <Text style={{ flex: 1, ...FONTS.h2 }}>Aktive Anfragen</Text>
-      </View>
-    );
-  }
-
   return !user || !orders ? (
     <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
       <ActivityIndicator size="large" color={COLORS.darkGreen} />
@@ -278,7 +247,7 @@ const OrderOverview = ({ navigation }) => {
                 marginHorizontal: SIZES.padding,
               }}
               categoryItem={item}
-              onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true })}
+              onPress={() => navigation.navigate("ConfirmedOrder", { recipe: item, isFromHome: false })}
               isConsumerMode={consumerMode}
             />) : (
               <RequestCard
@@ -286,7 +255,6 @@ const OrderOverview = ({ navigation }) => {
                 marginHorizontal: SIZES.padding,
               }}
               request={item}
-              onPress={() => navigation.navigate(consumerMode ? "OrderDetail" : "RecipeDetail", { recipe: item, isFromHome: true })}
               isConsumerMode={consumerMode}
             />
             )

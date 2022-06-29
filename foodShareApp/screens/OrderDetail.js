@@ -111,13 +111,19 @@ const OrderDetail = ({ navigation, route }) => {
     const [selectedOrder, setSelectedOrder] = React.useState(null);
     const [recipeDetail, setRecipeDetail] = React.useState(null);                                                 
     const [isLoading, setIsLoading] = React.useState(true);
+    const [user, setUser] = React.useState(null);
+    const [requested, setRequested] = React.useState(false);
+
 
     const scrollY = useRef(new Animated.Value(0)).current;
 
 
     React.useEffect(() => {
         console.log(route.params);
-        let { recipe } = route.params;
+        let { recipe, user } = route.params;
+        setUser(user);
+        var req = recipe.requestingUserIds.includes(user.id);
+        setRequested(req);
         const date = new Date(recipe.pickUpTime.seconds * 1000);
         recipe['pickupInH'] = Moment(date).format('HH:mm');
         getData(recipe);
@@ -237,7 +243,7 @@ const OrderDetail = ({ navigation, route }) => {
                 {/* Recipe Name */}
                 <View
                     style={{
-                        flex: 1.5,
+                        flex: 4,
                         justifyContent: 'center',
                     }}
                 >
@@ -250,6 +256,22 @@ const OrderDetail = ({ navigation, route }) => {
                         }}
                     >
                         Abholbereit um: {selectedOrder?.pickupInH}
+                    </Text>
+                </View>
+                <View
+                    style={{
+                        flex: 1.5,
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text
+                        style={{
+                            marginTop: 5,
+                            color: COLORS.darkLime,
+                            ...FONTS.body2
+                        }}
+                    >
+                        {new Intl.NumberFormat('de-CH', { style: 'currency', currency: 'CHF' }).format(selectedOrder?.cost)}
                     </Text>
                 </View>
             </View >
@@ -403,16 +425,14 @@ const OrderDetail = ({ navigation, route }) => {
     }
 
     async function requestOrder() {
-        console.log("letsgo");
-
         var updatedOrder = {
             ...selectedOrder,
-            test: "" //TODO Replace with Auth getUser
+            requestingUserIds: [...selectedOrder.requestingUserIds, user.id]
         }
         console.log(updatedOrder);
-        //await setDoc(doc(db, 'orders', updatedOrder.id), { status: updatedOrder.status, toUserUid: updatedOrder.toUserUid }, { merge: true });
+        await setDoc(doc(db, 'orders', updatedOrder.id), { requestingUserIds: updatedOrder.requestingUserIds }, { merge: true });
+        setRequested(true);
         setSelectedOrder(updatedOrder);
-        console.log(selectedOrder);
     }
 
     return (
@@ -426,7 +446,10 @@ const OrderDetail = ({ navigation, route }) => {
                     {renderHeaderBar()}
                     {renderNutrients()}
                     <View style={{paddingBottom: 100}}></View>
-                    <Fab onPress={requestOrder} backgroundColor={selectedOrder.status === 'active' ? COLORS.transparentBlack9 : COLORS.transparentBlack5} renderInPortal={false} shadow={2} right={140} size="sm" icon={<Ionicons name="fast-food" size={24} color="white" />} label={selectedOrder.status === 'active' ? (<Text style={{ color: COLORS.white, ...FONTS.body4 }} fontSize="sm">Anfragen</Text>) : (<Text style={{ color: COLORS.white, ...FONTS.body4 }} fontSize="sm">Angefragt...</Text>)} />
+                    <Fab onPress={requestOrder} backgroundColor={requested ? COLORS.transparentBlack5 : COLORS.transparentBlack9} 
+                    renderInPortal={false} shadow={2} right={140} size="sm" icon={<Ionicons name="fast-food" size={24} color="white" />} 
+                    label={!requested ? (<Text style={{ color: COLORS.white, ...FONTS.body4 }} fontSize="sm">Anfragen</Text>) 
+                    : (<Text style={{ color: COLORS.white, ...FONTS.body4 }} fontSize="sm">Angefragt...</Text>)} />
                 </View>
             }
 
