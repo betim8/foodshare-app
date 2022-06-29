@@ -7,8 +7,6 @@ import { View, Text, SafeAreaView, FlatList, ActivityIndicator } from "react-nat
 import { OrderCard } from "../components";
 import { FONTS, COLORS, SIZES } from "../constants";
 import { CustomButton } from "../components";
-import { Fab } from "native-base";
-import { Ionicons } from '@expo/vector-icons';
 import RequestCard from "../components/RequestCard";
 
 const OrderOverview = ({ navigation }) => {
@@ -21,7 +19,6 @@ const OrderOverview = ({ navigation }) => {
 
 
   useEffect(() => {
-    console.log("useffect userdata")
     onAuthStateChanged(auth, (user) => {
       if (user) {
         getUserData(user.uid);
@@ -31,8 +28,6 @@ const OrderOverview = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("useffect order data")
-
       if (consumerMode) {
         getOrderData(user?.id);
       } else {
@@ -43,7 +38,6 @@ const OrderOverview = ({ navigation }) => {
 
 
   async function getUserData(userUid) {
-    console.log("useradata")
     const userRef = await getDoc(doc(db, "users", userUid));
     setUser({
       id: userRef.id,

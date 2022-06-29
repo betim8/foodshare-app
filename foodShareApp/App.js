@@ -26,6 +26,12 @@ export { db, app, auth };
 
 const Stack = createStackNavigator();
 const App = () => {
+    
+    React.useEffect(() => {
+        return () => {
+            setLoggedIn(null); // This worked for me
+        };
+    }, []);
 
     const [loggedIn, setLoggedIn] = React.useState(null);
 
@@ -58,24 +64,27 @@ const App = () => {
         ],
     };
 
-    ui.start('#firebaseui-auth-container', uiConfig);
+    //ui.start('#firebaseui-auth-container', uiConfig);
 
     if (!loaded) {
         return null;
     }
 
     onAuthStateChanged(auth, (user) => {
-        console.log("test")
         if (user) {     
             setLoggedIn(true);
+            document.getElementById('firebaseui-auth-container').style.display = 'none';
         } else {
             setLoggedIn(false);
+            document.getElementById('firebaseui-auth-container').style.display = 'block';
+            ui.reset();
+            ui.start('#firebaseui-auth-container', uiConfig);
         }
     });
 
     return (
         <NativeBaseProvider>
-            <div style={{display: loggedIn || loggedIn === null ? "none" : "inline"}} id="firebaseui-auth-container"></div> 
+            <div id="firebaseui-auth-container"></div> 
             {
                 loggedIn ? (<NavigationContainer>
                     <Stack.Navigator
