@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { collection, getDoc, getDocs, query, addDoc } from "firebase/firestore";
+import { collection, getDoc, getDocs, query, addDoc, setDoc } from "firebase/firestore";
 import { db } from "../App";
 import { View, Text, TextInput, SafeAreaView, TouchableOpacity, ScrollView } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -95,15 +95,16 @@ const AddRecipe = ({ navigation, route }) => {
 
   async function saveRecipe() {
 
+    const newRecipeRef = doc(collection(db, "recipes"));
     const savingRecipe = {
         ingredients: selectedIngredients,
         name: recipeName,
         numOfRecipesInc: null,
-        recipeId: null,
+        recipeId: newRecipeRef.id,
         rowType: 'custom'
     }
 
-    const docRef = await addDoc(collection(db, "recipes"), savingRecipe);
+    await setDoc(newRecipeRef, savingRecipe);
     navigation.goBack();
     console.log(savingRecipe);
 

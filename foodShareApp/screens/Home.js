@@ -19,9 +19,7 @@ const Home = ({ navigation }) => {
 
 
   useEffect(() => {
-    console.log("auth effect");
     onAuthStateChanged(auth, (user) => {
-      console.log("letso");
       console.log(user);
       if (user) {
         getUserData(user.uid);
@@ -30,12 +28,13 @@ const Home = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("data effect");
+    if (user) {
       if (consumerMode) {
         getOrderData(user?.id);
       } else {
         getHistOrders(user?.id);
       }
+    } 
   }, [consumerMode, user]);
 
 
@@ -49,7 +48,6 @@ const Home = ({ navigation }) => {
   }
 
   async function getOrderData(userUid) {
-    console.log("order data")
     const orderQuery = query(collection(db, "orders"), where("status", "==", "active"), where("fromUserUid", "!=", userUid));
     const orderRef = await getDocs(orderQuery);
     orderRef.forEach((doc) => {

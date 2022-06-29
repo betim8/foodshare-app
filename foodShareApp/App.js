@@ -10,6 +10,7 @@ import { useFonts } from 'expo-font';
 import algoliasearch from 'algoliasearch/lite';
 import * as firebaseui from 'firebaseui';
 import firebase from 'firebase/compat/app';
+import 'firebaseui/dist/firebaseui.css';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { firebaseConfig, appId, apiKey } from "./localSecrets";
 
@@ -22,10 +23,11 @@ const auth = getAuth(app);
 var ui = new firebaseui.auth.AuthUI(auth);
 export { db, app, auth };
 
+
 const Stack = createStackNavigator();
 const App = () => {
 
-    const [loggedIn, setLoggedIn] = React.useState(true);
+    const [loggedIn, setLoggedIn] = React.useState(null);
 
     const [loaded] = useFonts({
         "Roboto-Black": require('./assets/fonts/Roboto-Black.ttf'),
@@ -63,9 +65,8 @@ const App = () => {
     }
 
     onAuthStateChanged(auth, (user) => {
-        console.log(user);
-        if (user) {
-            
+        console.log("test")
+        if (user) {     
             setLoggedIn(true);
         } else {
             setLoggedIn(false);
@@ -74,16 +75,16 @@ const App = () => {
 
     return (
         <NativeBaseProvider>
-            <div style={{display: loggedIn ? "none" : "inline"}} id="firebaseui-auth-container"></div>
+            <div style={{display: loggedIn || loggedIn === null ? "none" : "inline"}} id="firebaseui-auth-container"></div> 
             {
                 loggedIn ? (<NavigationContainer>
                     <Stack.Navigator
                         screenOptions={{
                             headerShown: false
                         }}
-                        initialRouteName={'Home'}
+                        initialRouteName={'Nav'}
                     >
-                        <Stack.Screen name='Home' component={Tabs} />
+                        <Stack.Screen name='Nav' component={Tabs} />
                         <Stack.Screen name='Search' component={Search} />
                         <Stack.Screen name="OrderDetail" component={OrderDetail} />
                         <Stack.Screen name="RecipeDetail" component={RecipeDetail} />
@@ -92,7 +93,7 @@ const App = () => {
                         <Stack.Screen name="User" component={User}/>
                         <Stack.Screen name="ConfirmedOrder" component={ConfirmedOrder}/>
                     </Stack.Navigator>
-                </NavigationContainer>) : <View></View>
+                </NavigationContainer>) : <></>
             }
         </NativeBaseProvider>
     )

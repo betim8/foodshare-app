@@ -394,13 +394,14 @@ const RecipeDetail = ({ navigation, route }) => {
     var pickUpH = Number(pickTime[0]);
     var pickUpMin = Number(pickTime[1]);
     var pickUpDate = Moment().hours(pickUpH).minutes(pickUpMin);
+    console.log(recipeDetail);
     var updatedOrder = {
       fromUserAvatar: user.avatar,
       fromUserName: user.surName,
       fromUserUid: user.id,
       pickUpAddress: user.address,
       cost: selectedPrice,
-      pickUpTime: pickUpDate,
+      pickUpTime: pickUpDate.toDate(),
       recipeId: recipeDetail.recipeId,
       recipeImgSrc: recipeDetail.recipeImgSrc ? recipeDetail.recipeImgSrc : 'https://firebasestorage.googleapis.com/v0/b/foodshare-ee888.appspot.com/o/app%2Fdefault_meal_img.png?alt=media&token=24c93c32-6c0e-4792-aefd-6ade47363d73',
       recipeName: recipeDetail.name,

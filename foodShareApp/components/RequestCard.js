@@ -103,9 +103,15 @@ const RequestCard = ({ containerStyle, request, isConsumerMode }) => {
                 <Text key={1} style={{ color: COLORS.gray, ...FONTS.body3 }}>
                   {u.surName}
                 </Text>
-                <Text key={2} style={{ color: COLORS.darkGreen, ...FONTS.body3 }}>
-                  Annehmen <AntDesign name="right" size={18} color={COLORS.darkGreen} />
-                </Text>
+                {request.toUserUid === u.id 
+                ? <Text key={2} style={{ color: COLORS.gray, ...FONTS.body3 }}>
+                  Angenommen
+                </Text> 
+                
+                : <Text key={2} style={{ color: COLORS.darkGreen, ...FONTS.body3 }}>
+                Annehmen <AntDesign name="right" size={18} color={COLORS.darkGreen} />
+              </Text> }
+                
               </View>
             </View>
           </TouchableOpacity>

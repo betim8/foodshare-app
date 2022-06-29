@@ -102,7 +102,6 @@ const OrderOverview = ({ navigation }) => {
       order.toUserUid = o.toUserUid;
       requests.push(order);
     }
-    console.log(requests);
     setRequests(requests);
   }
 
